@@ -1,1 +1,1 @@
-# CryptoPortfolioTracker
+The Crypto Portfolio Tracker is a web-based application designed for tracking cryptocurrency investments in real-time. It enables users to manage their cryptocurrency portfolio by adding various cryptocurrencies, checking the latest prices, and observing the overall value of their investments. The application features a TypeScript and React frontend, a Go backend, and utilizes a Solidity smart contract for the decentralized storage of portfolio data.
