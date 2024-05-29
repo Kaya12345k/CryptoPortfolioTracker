@@ -1,38 +1,55 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"os"
+    "fmt"
+    "log"
+    "net/http"
+    "os"
 
-	"github.com/joho/godotenv"
+    "github.com/joho/godotenv"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found")
-	}
+    if err := loadEnvironmentVariables(); err != nil {
+        log.Println("No .env file found")
+    }
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-		log.Printf("Defaulting to port %s", port)
-	}
+    serverPort := getServerPort()
+    setupServerRoutes()
 
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/api/portfolio", portfolioHandler)
-
-	log.Printf("Starting server on port %s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
-	}
+    log.Printf("Starting server on port %s", serverPort)
+    startServer(serverPort)
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Welcome to the Crypto Portfolio Tracker!")
+func loadEnvironmentVariables() error {
+    return godotenv.Load()
 }
 
-func portfolioHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Portfolio data will be shown here.")
+func getServerPort() string {
+    port := os.Getenv("PORT")
+    if port == "" {
+        defaultPort := "8080"
+        port = defaultPort
+        log.Printf("Defaulting to port %s", defaultPort)
+    }
+    return port
+}
+
+func setupServerRoutes() {
+    http.HandleFunc("/", homePageHandler)
+    http.HandleFunc("/api/portfolio", portfolioDataHandler)
+}
+
+func startServer(port string) {
+    if err := http.ListenAndServe(":"+port, nil); err != nil {
+        log.Fatalf("Failed to start server: %v", err)
+    }
+}
+
+func homePageHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, "Welcome to the Crypto Portfolio Tracker!")
+}
+
+func portfolioDataHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, "Portfolio data will be shown here.")
 }
