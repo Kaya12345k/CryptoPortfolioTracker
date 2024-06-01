@@ -3,7 +3,7 @@ package main
 import (
     "encoding/json"
     "fmt"
-    "io/ioutil"
+    "io"
     "log"
     "net/http"
     "os"
@@ -12,34 +12,30 @@ import (
 )
 
 type CryptoData struct {
-    ID          string `json:"id"`
-    Symbol      string `json:"symbol"`
-    Name        string `json:"name"`
+    ID           string  `json:"id"`
+    Symbol       string  `json:"symbol"`
+    Name         string  `json:"name"`
     CurrentPrice float64 `json:"current_price"`
 }
 
 func main() {
-    if err := loadEnvironmentVariables(); err != nil {
+    if err := godotenv.Load(); err != nil {
         log.Println("No .env file found")
     }
 
     serverPort := getServerPort()
+
     setupServerRoutes()
 
     log.Printf("Starting server on port %s", serverPort)
     startServer(serverPort)
 }
 
-func loadEnvironmentVariables() error {
-    return godotenv.Load()
-}
-
-func getServerPort() string {
+func getServeraintPort() string {
     port := os.Getenv("PORT")
     if port == "" {
-        defaultPort := "8080"
-        port = defaultPort
-        log.Printf("Defaulting to port %s", defaultPort)
+        port = "8080"
+        log.Printf("Defaulting to port %s", port)
     }
     return port
 }
@@ -51,9 +47,7 @@ func setupServerRoutes() {
 }
 
 func startServer(port string) {
-    if err := http.ListenAndServe(":"+port, nil); err != nil {
-        log.Fatalf("Failed to start server: %v", err)
-    }
+    log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +59,7 @@ func portfolioDataHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func cryptoDataHandler(w http.ResponseWriter, r *http.Request) {
-    cryptoData, err := fetchCryptoData("bitcoin") 
+    cryptoData, err := fetchCryptoData("bitcoin")
     if err != nil {
         http.Error(w, "Failed to fetch cryptocurrency data", http.StatusInternalServerError)
         return
@@ -73,34 +67,10 @@ func cryptoDataHandler(w http.ResponseWriter, r *http.Request) {
 
     jsonResponse, err := json.Marshal(cryptoData)
     if err != nil {
-        http.Error(w, "Failed to process cryptocurrency data", http.StatusInternalServerError)
+        http.Error(w, "Failed to encode cryptocurrency data", http.StatusInternalServerError)
         return
     }
+
     w.Header().Set("Content-Type", "application/json")
     w.Write(jsonResponse)
-}
-
-func fetchCryptoData(cryptoID string) (*CryptoData, error) {
-    url := fmt.Sprintf("https://api.coingecko.com/api/v3/coins/%s?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false", cryptoID)
-    response, err := http.Get(url)
-    if err != nil {
-        return nil, err
-    }
-    defer response.Body.Close()
-
-    if response.StatusCode != 200 {
-        return nil, fmt.Errorf("error fetching cryptocurrency data, status code: %d", response.StatusCode)
-    }
-
-    body, err := ioutil.ReadAll(response.Body)
-    if err != nil {
-        return nil, err
-    }
-
-    var cryptoData CryptoData
-    if err := json.Unmarshal(body, &cryptoData); err != nil {
-        return nil, err
-    }
-
-    return &cryptoData, nil
 }
