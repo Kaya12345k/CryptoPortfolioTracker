@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Env Variables</title>
+</head>
+<body>
+    <script>
+        const showEnvVar = (variable) => {
+            const value = process.env[variable];
+            document.body.innerHTML += `<p>${variable}: ${value}</p>`;
+        };
+        showEnvVar('YOUR_ENV_VARIABLE_NAME');
+    </script>
+</body>
+</html>
