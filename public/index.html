@@ -1,17 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Env Variables</title>
+    <title>Env Variables and Dark Mode</title>
+    <style>
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        .dark-mode button {
+            color: #121212;
+            background-color: white;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
 </head>
+
 <body>
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
     <script>
         const showEnvVar = (variable) => {
-            const value = process.env[variable];
+            // Assuming 'process.env' access is correctly handled through your build process or server-side handling
+            const value = process.env[variable] || 'Unknown'; // Default value for demonstration
             document.body.innerHTML += `<p>${variable}: ${value}</p>`;
         };
-        showEnvVar('YOUR_ENV_VARIABLE_NAME');
+
+        // Enhance the showEnvVar call as needed
+        // showEnvVar('YOUR_ENV_VARIABLE_NAME');
+
+        let isDarkMode = false;
+        const toggleDarkMode = () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+
+            // Update local storage or handle state accordingly
+        };
+
+        // Optionally Load initial mode from somewhere e.g., local storage
+        const loadInitialMode = () => {
+            // Example loading from localStorage
+            // var savedMode = localStorage.getItem('darkMode') || false;
+            // isDarkMode = savedMode === 'true';
+            // document.body.classList.toggle('dark-mode', isDarkMode);
+        };
+
+        // Call the loadInitialMode function to set the initial mode
+        loadInitialMode();
     </script>
 </body>
+
 </html>
