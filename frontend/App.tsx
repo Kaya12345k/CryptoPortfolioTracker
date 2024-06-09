@@ -1,45 +1,46 @@
 import React, { useState, useEffect } from 'react';
 
-type CryptoCurrency = {
+type CryptoAsset = {
   id: string;
   name: string;
-  amount: number;
+  quantity: number;
 }
 
-const CryptoPortfolioApp: React.FC = () => {
-  const [cryptos, setCryptos] = useState<CryptoCurrency[]>([]);
+const CryptoPortfolioTracker: React.FC = () => {
+  const [cryptoAssets, setCryptoAssets] = useState<CryptoAsset[]>([]);
 
-  const addCrypto = (crypto: CryptoCurrency) => {
-    setCryptos([...cryptos, crypto]);
+  const addCryptoAsset = (cryptoAsset: CryptoAsset) => {
+    setCryptoAssets([...cryptoAssets, cryptoAsset]);
   };
 
-  const updateCrypto = (id: string, newAmount: number) => {
-    setCryptos(cryptos.map(crypto => crypto.id === id ? { ...crypto, amount: newAmount } : crypto));
+  const updateCryptoAssetQuantity = (assetId: string, updatedQuantity: number) => {
+    setCryptoAssets(cryptoAssets.map(asset =>
+      asset.id === assetId ? { ...asset, quantity: updatedQuantity } : asset));
   };
 
   useEffect(() => {
-    const initialCryptos: CryptoCurrency[] = [
-      { id: 'btc', name: 'Bitcoin', amount: 2 },
-      { id: 'eth', name: 'Ethereum', amount: 5 },
+    const initialCryptoAssets: CryptoAsset[] = [
+      { id: 'btc', name: 'Bitcoin', quantity: 2 },
+      { id: 'eth', name: 'Ethereum', quantity: 5 },
     ];
-    setCryptos(initialCryptos);
+    setCryptoAssets(initialCryptoAssets);
   }, []);
 
   return (
     <div>
       <h1>Crypto Portfolio Tracker</h1>
       <div>
-        {cryptos.map(crypto => 
-          <div key={crypto.id}>
-            <span>{crypto.name}: {crypto.amount}</span>
+        {cryptoAssets.map(asset => 
+          <div key={asset.id}>
+            <span>{asset.name}: {asset.quantity}</span>
           </div>
         )}
       </div>
-      <button onClick={() => addCrypto({ id: 'ltc', name: 'Litecoin', amount: 10 })}>
+      <button onClick={() => addCryptoAsset({ id: 'ltc', name: 'Litecoin', quantity: 10 })}>
         Add Litecoin
       </button>
     </div>
   );
 };
 
-export default CryptoPortfolioApp;
+export default CryptoPortfolioTracker;
