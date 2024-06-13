@@ -1,51 +1,48 @@
 import React, { useState, useEffect } from 'react';
 
-// Define Types
-type CryptoAsset = {
+interface ICryptoAsset {
   id: string;
   name: string;
   quantity: number;
 }
 
-// Separate out the list component for better readability and maintenance
-const CryptoAssetList: React.FC<{ assets: CryptoAsset[] }> = ({ assets }) => (
+const CryptoAssetList: React.FC<{ assets: ICryptoAsset[] }> = ({ assets }) => (
   <div>
     {assets.map(asset => (
       <div key={asset.id}>
-        <span>{asset.name}: {asset.quantity}</span>
+        <span>{`${asset.name}: ${asset.quantity}`}</span>
       </div>
     ))}
   </div>
 );
 
 const CryptoPortfolioTracker: React.FC = () => {
-  const [cryptoAssets, setCryptoAssets] = useState<CryptoAsset[]>([]);
+  const [cryptoPortfolio, setCryptoPortfolio] = useState<ICryptoAsset[]>([]);
 
-  const addCryptoAsset = (cryptoAsset: CryptoAsset) => {
-    setCryptoAssets(prevAssets => [...prevAssets, cryptoAsset]);
+  const handleAddCryptoAsset = (newAsset: ICryptoAsset) => {
+    setCryptoPortfolio(previousPortfolio => [...previousPortfolio, newAsset]);
   };
 
-  const updateCryptoAssetQuantity = (assetId: string, updatedQuantity: number) => {
-    setCryptoAssets(prevAssets =>
-      prevAssets.map(asset =>
-        asset.id === assetId ? { ...asset, quantity: updatedQuantity } : asset)
+  const handleUpdateCryptoAssetQuantity = (assetId: string, newQuantity: number) => {
+    setCryptoPortfolio(previousPortfolio =>
+      previousPortfolio.map(asset =>
+        asset.id === assetId ? { ...asset, quantity: newQuantity } : asset)
     );
   };
 
-  // Initial crypto assets load
   useEffect(() => {
-    const initialCryptoAssets: CryptoAsset[] = [
+    const initialCryptoPortfolio: ICryptoAsset[] = [
       { id: 'btc', name: 'Bitcoin', quantity: 2 },
       { id: 'eth', name: 'Ethereum', quantity: 5 },
     ];
-    setCryptoAssets(initialCryptoAssets);
+    setCryptoPortfolio(initialCryptoPortfolio);
   }, []);
 
   return (
     <div>
       <h1>Crypto Portfolio Tracker</h1>
-      <CryptoAssetList assets={cryptoAssets} />
-      <button onClick={() => addCryptoAsset({ id: 'ltc', name: 'Litecoin', quantity: 10 })}>
+      <CryptoAssetList assets={cryptoPortfolio} />
+      <button onClick={() => handleAddCryptoAsset({ id: 'ltc', name: 'Litecoin', quantity: 10 })}>
         Add Litecoin
       </button>
     </div>
