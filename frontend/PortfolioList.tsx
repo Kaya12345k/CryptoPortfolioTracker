@@ -13,10 +13,18 @@ interface CryptoListProps {
   onDelete: (id: string) => void;
 }
 
-const CryptoList: React.FC<CryptoListProps> = ({ cryptocurrencies, onUpdate, onDelete }) => {
+const CryptoList: React.FC<CryptoListCommProps> = ({ cryptocurrencies, onUpdate, onDelete }) => {
+  // Function to calculate total portfolio value
+  const calculateTotalValue = (cryptocurrencies: CryptoCurrency[]) => {
+    return cryptocurrencies.reduce((acc, current) => acc + (current.currentPrice * current.amountHeld), 0);
+  };
+
+  const totalValue = calculateTotalValue(cryptocurrencies);
+
   return (
     <div>
       <h2>My Cryptocurrency Portfolio</h2>
+      <h3>Total Portfolio Value: ${totalValue.toFixed(2)}</h3> {/* Displaying the total portfolio value */}
       <ul>
         {cryptocurrencies.map((crypto) => (
           <li key={crypto.id}>
@@ -30,4 +38,4 @@ const CryptoList: React.FC<CryptoListProps> = ({ cryptocurrencies, onUpdate, onD
   );
 };
 
-export default Crypto Artur;
+export default CryptoList;
