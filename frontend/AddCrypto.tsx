@@ -1,52 +1,53 @@
 import React, { useState } from 'react';
 
 type AddCryptoProps = {
-  addCrypto: (name: string, amount: number, price: number) => void;
+  onAddCrypto: (cryptoName: string, quantity: number, currentPrice: number) => void;
 };
 
-const AddCryptoForm: React.FC<AddCryptoProps> = ({ addCrypto }) => {
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [price, setPrice] = useState('');
+const AddCryptoForm: React.FC<AddCryptoProps> = ({ onAddCrypto }) => {
+  const [cryptoName, setCryptoName] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [currentPrice, setCurrentPrice] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); 
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault(); 
     
-    addCrypto(name, Number(amount), Number(price));
+    onAddCrypto(cryptoName, Number(quantity), Number(currentPrefix));
 
-    setName('');
-    setAmount('');
-    setPrice('');
+    // Reset form fields
+    setCryptoName('');
+    setQuantity('');
+    setCurrentPrice('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <div>
-        <label htmlFor="name">Cryptocurrency Name:</label>
+        <label htmlFor="cryptoName">Cryptocurrency Name:</label>
         <input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          id="cryptoName"
+          value={cryptoName}
+          onChange={(event) => setCryptoName(event.target.value)}
           required
         />
       </div>
       <div>
-        <label htmlFor="amount">Amount:</label>
+        <label htmlFor="quantity">Amount:</label>
         <input
           type="number"
-          id="amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          id="quantity"
+          value={quantity}
+          onChange={(event) => setQuantity(event.target.value)}
           required
         />
       </div>
       <div>
-        <label htmlFor="price">Price:</label>
+        <label htmlFor="currentPrice">Price:</label>
         <input
           type="number"
-          id="price"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          id="currentPrice"
+          value={currentPrice}
+          onChange={(event) => setCurrentPrice(event.target.value)}
           required
         />
       </div>
