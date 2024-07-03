@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
 
-interface UpdateCryptoFormProps {
-    onFormSubmit: (crypto: { name: string; amount: number; price: number }) => void;
+interface CryptoFormData {
+    onFormSubmit: (cryptoData: { name: string; amount: number; currentPrice: number }) => void;
 }
 
-const UpdateCryptoForm: React.FC<UpdateCryptoFormProps> = ({ onFormSubmit }) => {
-  const [cryptoName, setCryptoName] = useState('');
-  const [amount, setAmount] = useState<number | ''>('');
-  const [price, setPrice] = useState<number | ''>('');
+const CryptoUpdateForm: React.FC<CryptoformData> = ({ onFormSubmit }) => {
+  const [cryptoName, setCryptoName] = useState<string>('');
+  const [cryptoAmount, setCryptoAmount] = useState<number | ''>('');
+  const [cryptoPrice, setCryptoPrice] = useState<number | ''>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cryptoName || amount <= 0 || price <= 0) {
-      alert('All fields are required and must be greater than 0');
+    if (!cryptoName || cryptoAmount <= 0 || cryptoPrice <= 0) {
+      alert('All fields are required and must be positive values.');
       return;
     }
-    onFormSubmit({ name: cryptoName, amount: Number(amount), price: Number(price) });
+    onFormSubmit({ name: cryptoName, amount: Number(cryptoAmount), currentPrice: Number(cryptoPrice) });
+    clearFormFields();
+  };
+
+  const clearFormFields = () => {
     setCryptoName('');
-    setAmount('');
-    setPrice('');
+    setCryptoAmount('');
+    setCryptoPrice('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <div>
         <label>
           Cryptocurrency Name:
@@ -36,22 +40,22 @@ const UpdateCryptoForm: React.FC<UpdateCryptoFormProps> = ({ onFormSubmit }) => 
       </div>
       <div>
         <label>
-          Amount:
+          Amount (in Units):
           <input
             type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.valueAsNumber)}
+            value={cryptoAmount}
+            onChange={(e) => setCryptoAmount(e.target.valueAsNumber)}
             required
           />
         </label>
       </div>
       <div>
         <label>
-          Price:
+          Current Price (USD):
           <input
             type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.valueAsNumber)}
+            value={cryptoPrice}
+            onChange={(e) => setCryptoPrice(e.target.valueAsNumber)}
             required
           />
         </label>
@@ -61,4 +65,4 @@ const UpdateCryptoForm: React.FC<UpdateCryptoFormProps> = ({ onFormSubmit }) => 
   );
 };
 
-export default UpdateCryptoForm;
+export default CryptoUpdateForm;
