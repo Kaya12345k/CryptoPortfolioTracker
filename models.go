@@ -2,13 +2,14 @@ package main
 
 import (
     "fmt"
+    "log"
     "os"
     "github.com/joho/godotenv"
 )
 
 type Portfolio struct {
-    ID           string `json:"id"`
-    UserID       string `json:"userId"`
+    ID              string          `json:"id"`
+    UserID          string          `json:"userId"`
     Cryptocurrencies []Cryptocurrency `json:"cryptocurrencies"`
 }
 
@@ -21,16 +22,18 @@ type Cryptocurrency struct {
 }
 
 func main() {
-    err := godotenv.Load()
-    if err != nil {
-        fmt.Println("Error loading .env file")
-        return
+    if err := godotenv.Load(); err != nil {
+        log.Fatalf("Error loading .env file: %s", err)
     }
-
+    
     dbUser := os.Getenv("DB_USER")
     dbPassword := os.Getenv("DB_PASSWORD")
+    if dbUser == "" || dbPassword == "" {
+        log.Fatal("Database credentials are not set in environment variables")
+    }
+
     fmt.Println("Database User:", dbUser)
-    fmt.Println("Database Password:", dbPassword)
+    fmt.Printf("Database Password: %s\n", dbPassword)
 
     portfolio := Portfolio{
         ID:     "portfolio123",
