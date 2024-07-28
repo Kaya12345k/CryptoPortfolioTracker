@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract CryptoPortfolioTracker {
@@ -15,6 +16,9 @@ contract CryptoPortfolioTracker {
     event CryptoAdded(uint id, string name, uint amount, uint price);
     event CryptoUpdated(uint id, uint amount, uint price);
 
+    // Custom error declarations
+    error CryptoNotFound(uint requestedId, uint maxId);
+
     function addCrypto(string memory name, uint amount, uint price) public {
         cryptoCount++;
         portfolio[cryptoCount] = CryptoCurrency(cryptoCount, name, amount, price);
@@ -22,14 +26,16 @@ contract CryptoPortfolioTracker {
     }
 
     function updateCrypto(uint id, uint newAmount, uint newPrice) public {
-        require(id <= cryptoCount, "Crypto not found");
+        if(id > cryptoCount) revert CryptoNotFound(id, cryptoCount);
+        
         portfolio[id].amount = newAmount;
         portfolio[id].price = newPrice;
         emit CryptoUpdated(id, newAmount, newPrice);
     }
 
     function getCrypto(uint id) public view returns (CryptoCurrency memory) {
-        require(id <= cryptoCount, "Crypto not found");
+        if(id > cryptoCount) revert CryptoNotFound(id, cryptoCount);
+
         return portfolio[id];
     }
 
